@@ -54,8 +54,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Style\LeftMarginMultiplierConverter.cs" />
-    <Compile Include="Style\TreeViewItemExtensions.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -110,5 +108,6 @@
   <ItemGroup>
     <Resource Include="Resource\Window_Icon.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

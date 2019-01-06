@@ -16,84 +16,112 @@ using System.Net;
 
 namespace HttpHeadersViewer.View
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private WebHeaderCollection headers;
+        public List<WebHeaderCollection> headers;
 
+        public string GetCurrentTime()
+        {
+            DateTime Now = DateTime.Now;
+            return "[" + Now.Hour + ":" + Now.Minute + ":" + Now.Second + "] ";
+        }
+
+        public void PrintComboBoxHeaders()
+        {
+            for (int i = 0; i < headers[ListBoxRequests.SelectedIndex].Count; i++)
+            {
+                ComboBoxHeaders.Items.Add(headers[ListBoxRequests.SelectedIndex].GetKey(i));
+            }
+            ComboBoxHeaders.SelectedIndex = 0;
+        }
+        
         public MainWindow()
         {
             InitializeComponent();
+            headers = new List<WebHeaderCollection>();
+            TextBlockStatus.Text = "Programm ready";
         }
 
-        private void Button_Quit(object sender, RoutedEventArgs e)
+        private void ButtonQuit_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        private void Button_CreateRequest(object sender, RoutedEventArgs e)
+        private void ButtonDelete_Click(object sender, RoutedEventArgs e)
         {
-            ButtonDeleteRequest.IsEnabled = true;
-            ButtonCreateRequest.IsEnabled = false;
-            TextBoxRequestUri.IsEnabled = true;
-            TextBoxRequestUri.Focus();
-            ButtonGetResponse.IsEnabled = true;
-            ComboBoxHeaders.IsEnabled = true;
-        }
-
-        private void Button_DeleteRequest(object sender, RoutedEventArgs e)
-        {
-
-            ButtonDeleteRequest.IsEnabled = false;
-            ButtonCreateRequest.IsEnabled = true;
-            TextBoxRequestUri.Clear();
-            TextBoxRequestUri.IsEnabled = false;
-            ButtonGetResponse.IsEnabled = false;
+            
+            headers.RemoveAt(ListBoxRequests.SelectedIndex);
+            ListBoxRequests.Items.RemoveAt(ListBoxRequests.SelectedIndex);
+            TextBoxRequest.Clear();
+            TextBlockRequests.Text = "Requests " + ListBoxRequests.Items.Count;
+            ButtonDelete.IsEnabled = false;
             ComboBoxHeaders.Items.Clear();
-            if (headers != null)
+            TextBlockHeaders.Text = "Headers 0";
+            TextBoxHeader.Clear();
+        }
+        
+        private void ButtonAdd_Click(object sender, RoutedEventArgs e)
+        {
+            if(headers.Count > 0)
             {
-                headers.Clear();
+                ButtonDelete.IsEnabled = false;
+                TextBlockRequests.Text = "Requests " + ListBoxRequests.Items.Count;
+                ListBoxRequests.UnselectAll();
+                ComboBoxHeaders.Items.Clear();
+                TextBlockHeaders.Text = "Headers 0";
+                TextBoxHeader.Clear();
             }
-            TextBoxHeaderValue.Clear();
-            TextBlockHeadersCount.Text = "0/0";
-            ImageGetResponse.ToolTip = "Get response";
+            TextBoxRequest.IsEnabled = true;
+            TextBoxRequest.Clear();
+            TextBoxRequest.Focus();
+            ButtonResponse.IsEnabled = true;
         }
 
-        private void Button_GetResponse(object sender, RoutedEventArgs e)
+        private void ButtonResponse_Click(object sender, RoutedEventArgs e)
         {
-            ButtonGetResponse.IsEnabled = false;
-            if (ComboBoxHeaders.Items.Count > 0)
+            if(TextBoxRequest.Text.Length > 0)
             {
+                HttpWebRequest request = HttpWebRequest.CreateHttp(TextBoxRequest.Text);
+                WebResponse response = request.GetResponse();
+                headers.Add(response.Headers);
+                ListBoxRequests.Items.Add(TextBoxRequest.Text);
+                ListBoxRequests.SelectedIndex = ListBoxRequests.Items.Count - 1;
+                TextBoxRequest.IsEnabled = false;
+                TextBoxConsole.Clear();
+                ButtonResponse.IsEnabled = false;
+                TextBlockRequests.Text = "Requests " + ListBoxRequests.Items.Count + "/" + ListBoxRequests.Items.Count;
+                if(headers.Count > 0)
+                {
+                    ComboBoxHeaders.Items.Clear();
+                }
+                PrintComboBoxHeaders();
+            }
+            else
+            {
+                TextBoxRequest.Focus();
+                TextBoxConsole.Text = GetCurrentTime() + "Request string is empty.\n";
+            }
+        }
+
+        private void ListBoxRequests_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(ListBoxRequests.SelectedItem != null)
+            {
+                ButtonDelete.IsEnabled = true;
+                TextBoxRequest.Text = ListBoxRequests.SelectedValue.ToString();
+                TextBoxRequest.IsEnabled = false;
+                TextBlockRequests.Text = "Requests " + (ListBoxRequests.SelectedIndex + 1) + "/" + ListBoxRequests.Items.Count;
                 ComboBoxHeaders.Items.Clear();
-                TextBoxHeaderValue.Clear();
+                PrintComboBoxHeaders();
             }
-
-            if (TextBoxRequestUri.IsEnabled)
-            {
-                TextBoxRequestUri.IsEnabled = false;
-            }
-            HttpWebRequest request = HttpWebRequest.CreateHttp(TextBoxRequestUri.Text);
-            WebResponse response = request.GetResponse();
-            headers = response.Headers;
-
-            for (int i = 0; i < headers.Count; i++)
-            {
-                ComboBoxHeaders.Items.Add(headers.GetKey(i));
-            }
-            ComboBoxHeaders.SelectedIndex = 0;
-            ImageGetResponse.ToolTip = "Refresh";
-            ButtonGetResponse.IsEnabled = true;
         }
 
         private void ComboBoxHeaders_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            TextBlockHeadersCount.Text = 1 + "/" + headers.Count;
-            if (ComboBoxHeaders.Items.Count > 0)
+        {   
+            if(ComboBoxHeaders.Items.Count > 0)
             {
-                string header = headers.GetKey(ComboBoxHeaders.SelectedIndex);
-                TextBoxHeaderValue.Text = headers.Get(header);
+                TextBlockHeaders.Text = "Headres " + (ComboBoxHeaders.SelectedIndex + 1) + "/" + ComboBoxHeaders.Items.Count;
+                TextBoxHeader.Text = headers[ListBoxRequests.SelectedIndex].Get(ComboBoxHeaders.SelectedIndex);
             }
         }
     }
