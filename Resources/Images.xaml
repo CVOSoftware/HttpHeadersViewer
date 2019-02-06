@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:HttpHeadersViewer.Resources">
+
+    <BitmapImage x:Key="Add" UriSource="pack://application:,,,/Resources/Images/Add.ico"/>
+    <BitmapImage x:Key="Delete" UriSource="pack://application:,,,/Resources/Images/Delete.ico"/>
+    <BitmapImage x:Key="Export" UriSource="pack://application:,,,/Resources/Images/Export.ico"/>
+    <BitmapImage x:Key="Get" UriSource="pack://application:,,,/Resources/Images/Get.ico"/>
+    <BitmapImage x:Key="Quit" UriSource="pack://application:,,,/Resources/Images/Quit.ico"/>
+    <BitmapImage x:Key="WindowIcon" UriSource="pack://application:,,,/Resources/Images/WindowIcon.ico"/>
+
+</ResourceDictionary>

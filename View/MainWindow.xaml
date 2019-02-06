@@ -5,24 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HttpHeadersViewer.View"
         mc:Ignorable="d"
-        Icon="/Resource/Window_Icon.ico"
-        Title="HTTPHeadersViewer" 
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize"
+        Icon="{StaticResource WindowIcon}"
+        Title="{StaticResource descMainTitle}" 
         Height="400" 
         Width="700"
-        Background="{StaticResource WindowBackgroundBrush}"
-        WindowStartupLocation="CenterScreen"
-        ResizeMode="CanMinimize">
+        Background="{StaticResource WindowBackgroundBrush}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
+        
+        <!--#region Menu-->
         <Border Grid.Row="0"
                 Padding="5"
-                Background="#333333"
-                BorderBrush="#666666"
-                BorderThickness="0, 0, 0, 1">
+                BorderBrush="{StaticResource LightDisabledBackgroundBrush}"
+                BorderThickness="0, 0, 0, 1"
+                Background="{StaticResource DarkBackgroundBrush}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
@@ -33,49 +35,57 @@
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0"
-                        ToolTip="Quit programm" 
                         Margin="0, 0, 5, 0"
                         x:Name="ButtonQuit" 
-                        Click="ButtonQuit_Click">
-                    <Image Source="/Resource/Icons/Quit.ico"/>
+                        ToolTip="{StaticResource descQuit}"
+                        Click="QuitEvent">
+                    <Image Source="{StaticResource Quit}"/>
                 </Button>
                 <Button Grid.Column="1"
-                        ToolTip="Export"
                         Margin="0, 0, 5, 0" 
-                        IsEnabled="False">
-                    <Image Source="/Resource/Icons/Export.ico"/>
+                        x:Name="ButtonExport"
+                        IsEnabled="False"
+                        ToolTip="{StaticResource descExp}"
+                        Click="ExportEvent">
+                    <Image Source="{StaticResource Export}"/>
                 </Button>
                 <Button Grid.Column="2"
-                        ToolTip="Delete request" 
                         Margin="0, 0, 5, 0" 
+                        x:Name="ButtonDelete"
                         IsEnabled="False"
-                        x:Name="ButtonDelete" Click="ButtonDelete_Click">
-                    <Image Source="/Resource/Icons/Delete.ico"/>
+                        VerticalAlignment="Top"
+                        ToolTip="{StaticResource descDel}"
+                        Click="DeleteEvent">
+                    <Image Source="{StaticResource Delete}"/>
                 </Button>
                 <Button Grid.Column="3"
-                        ToolTip="Add request" 
                         Margin="0, 0, 5, 0"
                         x:Name="ButtonAdd"
-                        Click="ButtonAdd_Click">
-                    <Image Source="/Resource/Icons/Add.ico"/>
+                        ToolTip="{DynamicResource descAdd}"
+                        Click="AddEvent">
+                    <Image Source="{StaticResource Add}"/>
                 </Button>
                 <TextBox Grid.Column="4"
                          Margin="0, 0, 10, 0"
-                         BorderBrush="#666666" 
-                         BorderThickness="1, 1, 1, 1"
-                         VerticalAlignment="Center"
+                         x:Name="TextBoxUrl"
                          IsEnabled="False"
-                         x:Name="TextBoxRequest"></TextBox>
+                         VerticalAlignment="Center"
+                         BorderBrush="{StaticResource LightDisabledBackgroundBrush}" 
+                         BorderThickness="1" 
+                         TextChanged="TextBoxUrlEvent"/>
                 <Button Grid.Column="5"
-                        ToolTip="Get response"
-                        Height="30" 
-                        VerticalAlignment="Top"
+                        x:Name="ButtonResponse"
                         IsEnabled="False"
-                        x:Name="ButtonResponse" Click="ButtonResponse_Click" >
-                    <Image Source="/Resource/Icons/Get.ico"/>
+                        VerticalAlignment="Top"
+                        ToolTip="{StaticResource descResp}"
+                        Click="ResponseEvent">
+                    <Image Source="{StaticResource Get}"/>
                 </Button>
             </Grid>    
         </Border>
+        <!--#endregion-->
+        
+        <!--region Body-->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -89,21 +99,43 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0"
-                           Margin="0, 0, 0, 5"
-                           Style="{StaticResource Header}"
-                           x:Name="TextBlockRequests">Requests 0</TextBlock>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="30"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Margin="0, 0, 0, 5"
+                               Style="{StaticResource Header}"
+                               Text="{StaticResource descQueries}"/>
+                    <TextBlock Grid.Column="1"
+                               Margin="5, 0, 0, 5"
+                               x:Name="TextBlockRequests"
+                               Style="{StaticResource Header}"/>
+                    <TextBlock Grid.Column="2"
+                               Style="{StaticResource Header}"
+                               Text="{StaticResource descLimit}"/>
+                    <TextBlock Grid.Column="3"
+                               Margin="5, 0, 0, 5"
+                               x:Name="TextBlockLimit"
+                               Style="{StaticResource Header}"/>
+                </Grid>
                 <ListBox Grid.Row="1"
                          Margin="0, 0, 0, 10"
-                         x:Name="ListBoxRequests" 
-                         SelectionChanged="ListBoxRequests_SelectionChanged"></ListBox>
+                         x:Name="ListBoxQueries"
+                         SelectionChanged="SelectQueryEvent">
+                </ListBox>
                 <TextBlock Grid.Row="2"
                            Margin="0, 0, 0, 5"
-                           Style="{StaticResource Header}">Console</TextBlock>
+                           Style="{StaticResource Header}"
+                           Text="{StaticResource descConsole}"/>
                 <TextBox Grid.Row="3"
+                         x:Name="TextBoxConsole"
                          IsReadOnly="True"
                          TextWrapping="Wrap"
-                         x:Name="TextBoxConsole"></TextBox>
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"/>
             </Grid>
             <Grid Grid.Column="1"
                   Margin="5, 10, 10, 10">
@@ -111,41 +143,61 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition Height="*"/>    
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0"
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
                            Margin="0, 0, 0, 5"
                            Style="{StaticResource Header}"
-                           x:Name="TextBlockHeaders">Headers 0</TextBlock>
+                           Text="{StaticResource descHeaders}"/>
+                    <TextBlock Grid.Column="1"
+                               Margin="5, 0, 0, 5"
+                               x:Name="TextBlockHeaders"
+                               Style="{StaticResource Header}"/>
+                </Grid>
                 <ComboBox Grid.Row="1"
                           Margin="0, 0, 0, 10"
-                          x:Name="ComboBoxHeaders" SelectionChanged="ComboBoxHeaders_SelectionChanged"></ComboBox>
+                          x:Name="ComboBoxHeaders" 
+                          SelectionChanged="SelectHeaderEvent"/>
                 <TextBlock Grid.Row="2"
                            Margin="0, 0, 0, 5"
-                           Style="{StaticResource Header}">Header</TextBlock>
+                           Style="{StaticResource Header}"
+                           Text="{StaticResource descDesc}"/>
                 <TextBox Grid.Row="3"
+                         x:Name="TextBoxHeader"
                          IsReadOnly="True"
                          TextWrapping="Wrap"
-                         x:Name="TextBoxHeader"></TextBox>
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"/>
             </Grid>
         </Grid>
+        <!--#endregion-->
+        
+        <!--#region StatusBar-->
         <Border Grid.Row="2"
                 Padding="5"
-                Background="#333333"
-                BorderBrush="#666666"
-                BorderThickness="0, 1, 0, 0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+                BorderBrush="{StaticResource LightDisabledBackgroundBrush}"
+                BorderThickness="0, 1, 0, 0"
+                Background="{StaticResource DarkBackgroundBrush}">
+            <StackPanel Orientation="Horizontal">
                 <TextBlock Grid.Column="0"
                            Margin="0, 0, 5, 0"
-                           Style="{StaticResource Header}">Status:</TextBlock>
-                <TextBlock Grid.Column="1"
                            Style="{StaticResource Header}"
-                           x:Name="TextBlockStatus"></TextBlock>
-            </Grid>    
+                           Text="{StaticResource descNetwork}"/>
+                <Border x:Name="NetworkStatusIcon"
+                        Margin="0, 0, 5, 0"
+                        Width="8" 
+                        Height="8"
+                        CornerRadius="4"/>
+                <TextBlock Grid.Column="1"
+                           x:Name="TextBlockStatus"
+                           Style="{StaticResource Header}"/>
+            </StackPanel>
         </Border>
+        <!--#endregion-->
+        
     </Grid>
 </Window>
