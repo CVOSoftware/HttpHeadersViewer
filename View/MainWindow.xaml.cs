@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Net;
-using HttpHeadersViewer.Common;
 
 namespace HttpHeadersViewer.View
 {

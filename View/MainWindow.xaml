@@ -2,17 +2,23 @@
     x:Class="HttpHeadersViewer.View.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="clr-namespace:HttpHeadersViewer.View.Behavior"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:HttpHeadersViewer.View"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:c="clr-namespace:HttpHeadersViewer.View.Converters"
+    x:Name="Main"
     Title="{StaticResource descMainTitle}"
-    Width="700"
-    Height="400"
+    Width="800"
+    Height="600"
     Background="{StaticResource WindowBackgroundBrush}"
     Icon="{StaticResource WindowIcon}"
     ResizeMode="CanMinimize"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
+    <Window.Resources>
+        <c:NetworkStatusToBrushConverter x:Key="NetworkStatusToBrushConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -35,50 +41,47 @@
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <Button
-                    x:Name="ButtonQuit"
                     Grid.Column="0"
                     Margin="0,0,5,0"
-                    ToolTip="{StaticResource descQuit}">
+                    Command="{Binding ExitProgram}"
+                    CommandParameter="{Binding ElementName=Main}">
                     <Image Source="{StaticResource Quit}" />
                 </Button>
                 <Button
-                    x:Name="ButtonExport"
                     Grid.Column="1"
                     Margin="0,0,5,0"
-                    IsEnabled="False"
-                    ToolTip="{StaticResource descExp}">
+                    Command="{Binding ShowExportWindow}"
+                    CommandParameter="{Binding ElementName=Main}">
                     <Image Source="{StaticResource Export}" />
                 </Button>
                 <Button
-                    x:Name="ButtonDelete"
                     Grid.Column="2"
                     Margin="0,0,5,0"
-                    VerticalAlignment="Top"
-                    IsEnabled="False"
-                    ToolTip="{StaticResource descDel}">
+                    Command="{Binding RemoveRequest}">
                     <Image Source="{StaticResource Delete}" />
                 </Button>
                 <Button
-                    x:Name="ButtonAdd"
                     Grid.Column="3"
                     Margin="0,0,5,0"
-                    ToolTip="{DynamicResource descAdd}">
+                    Command="{Binding AddRequest}">
                     <Image Source="{StaticResource Add}" />
                 </Button>
                 <TextBox
-                    x:Name="TextBoxUrl"
                     Grid.Column="4"
                     Margin="0,0,10,0"
                     VerticalAlignment="Center"
                     BorderBrush="{StaticResource LightDisabledBackgroundBrush}"
                     BorderThickness="1"
-                    IsEnabled="False" />
+                    IsEnabled="{Binding BlockedRequestFields}"
+                    Text="{Binding RequestString, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Behaviors>
+                        <b:TextBoxFocusBehavior />
+                    </i:Interaction.Behaviors>
+                </TextBox>
                 <Button
-                    x:Name="ButtonResponse"
                     Grid.Column="5"
                     VerticalAlignment="Top"
-                    IsEnabled="False"
-                    ToolTip="{StaticResource descResp}">
+                    Command="{Binding StartRequest}">
                     <Image Source="{StaticResource Get}" />
                 </Button>
             </Grid>
@@ -93,7 +96,7 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="160" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
@@ -108,34 +111,41 @@
                         Style="{StaticResource Header}"
                         Text="{StaticResource descQueries}" />
                     <TextBlock
-                        x:Name="TextBlockRequests"
                         Grid.Column="1"
                         Margin="5,0,0,5"
-                        Style="{StaticResource Header}" />
+                        Style="{StaticResource Header}"
+                        Text="{Binding RequestCount, Mode=OneWay}" />
                     <TextBlock
                         Grid.Column="2"
                         Style="{StaticResource Header}"
                         Text="{StaticResource descLimit}" />
                     <TextBlock
-                        x:Name="TextBlockLimit"
                         Grid.Column="3"
                         Margin="5,0,0,5"
-                        Style="{StaticResource Header}" />
+                        Style="{StaticResource Header}"
+                        Text="{Binding Limit}" />
                 </Grid>
                 <ListBox
-                    x:Name="ListBoxQueries"
                     Grid.Row="1"
-                    Margin="0,0,0,10" />
+                    Margin="0,0,0,10"
+                    ItemsSource="{Binding Requests}"
+                    SelectedItem="{Binding SelectRequest}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding RequestString}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
                 <TextBlock
                     Grid.Row="2"
                     Margin="0,0,0,5"
                     Style="{StaticResource Header}"
                     Text="{StaticResource descConsole}" />
                 <TextBox
-                    x:Name="TextBoxConsole"
                     Grid.Row="3"
                     IsReadOnly="True"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    Text="{Binding InfoMessage}"
                     TextWrapping="Wrap" />
             </Grid>
             <Grid Grid.Column="1" Margin="5,10,10,10">
@@ -156,25 +166,32 @@
                         Style="{StaticResource Header}"
                         Text="{StaticResource descHeaders}" />
                     <TextBlock
-                        x:Name="TextBlockHeaders"
                         Grid.Column="1"
                         Margin="5,0,0,5"
-                        Style="{StaticResource Header}" />
+                        Style="{StaticResource Header}"
+                        Text="{Binding HeaderCount}" />
                 </Grid>
                 <ComboBox
-                    x:Name="ComboBoxHeaders"
                     Grid.Row="1"
-                    Margin="0,0,0,10" />
+                    Margin="0,0,0,10"
+                    ItemsSource="{Binding SelectRequest.Headers}"
+                    SelectedItem="{Binding SelectHeader}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Key}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <TextBlock
                     Grid.Row="2"
                     Margin="0,0,0,5"
                     Style="{StaticResource Header}"
                     Text="{StaticResource descDesc}" />
                 <TextBox
-                    x:Name="TextBoxHeader"
                     Grid.Row="3"
                     IsReadOnly="True"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    Text="{Binding HeaderValue}"
                     TextWrapping="Wrap" />
             </Grid>
         </Grid>
@@ -190,16 +207,16 @@
                     Margin="0,0,5,0"
                     Style="{StaticResource Header}"
                     Text="{StaticResource descNetwork}" />
-                <Border
-                    x:Name="NetworkStatusIcon"
+                <Rectangle
                     Width="8"
                     Height="8"
                     Margin="0,0,5,0"
-                    CornerRadius="4" />
+                    RadiusX="4"
+                    RadiusY="4"
+                    Fill="{Binding NetworkStatus, Converter={StaticResource NetworkStatusToBrushConverter}}"/>
                 <TextBlock
-                    x:Name="TextBlockStatus"
-                    Grid.Column="1"
-                    Style="{StaticResource Header}" />
+                    Style="{StaticResource Header}"
+                    Text="{Binding NetworkStatus}" />
             </StackPanel>
         </Border>
     </Grid>

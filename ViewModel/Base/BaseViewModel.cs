@@ -1,14 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
+using System.Runtime.Serialization;
 namespace HttpHeadersViewer.ViewModel.Base
 {
-    internal class BaseViewModel : INotifyPropertyChanged
+    [DataContract]
+    public class BaseViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

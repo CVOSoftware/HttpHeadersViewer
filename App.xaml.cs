@@ -8,11 +8,20 @@ namespace HttpHeadersViewer
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-            MainViewModel viewModel = new MainViewModel();
-            MainWindow view = new MainWindow();
-            view.DataContext = viewModel;
-            view.Show();
+            if(this.IsOneTimeLaunch())
+            {
+                base.OnStartup(e);
+                var viewModel = new MainViewModel();
+                var view = new MainWindow
+                {
+                    DataContext = viewModel
+                };
+                view.Show();
+            }
+            else
+            {
+                this.Shutdown();
+            }
         }
     }
 }

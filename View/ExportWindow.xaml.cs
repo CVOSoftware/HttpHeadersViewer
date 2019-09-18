@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using WinForms =  System.Windows.Forms;
-using HttpHeadersViewer.Common;
 
 namespace HttpHeadersViewer.View
 {
