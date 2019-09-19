@@ -7,8 +7,8 @@ C#, WPF, MVVM, HTTP, Headers
 
 #### Main window
 
-![Image alt](https://github.com/CVOSoftware/HttpHeadersViewer/blob/master/git-resource/main.PNG)
+![Image alt](https://github.com/CVOSoftware/HttpHeadersViewer/blob/master/git-resource/main.png)
 
 #### Export window
 
-![Image alt](https://github.com/CVOSoftware/HttpHeadersViewer/blob/master/git-resource/export.PNG)
+![Image alt](https://github.com/CVOSoftware/HttpHeadersViewer/blob/master/git-resource/export.png)
