@@ -2,7 +2,7 @@
 
 ### Install
 To work correctly, it must be installed .NET Framework 4.8. The program itself is delivered without an installer and is portable.
-* [DirectoryMonitoring-v2020.1.0.rar](https://github.com/CVOSoftware/HttpHeadersViewer/releases/download/Release/HttpHeadersViewer-v.1.0.rar)
+* [HttpHeadersViewer-v.1.0.rar](https://github.com/CVOSoftware/HttpHeadersViewer/releases/download/Release/HttpHeadersViewer-v.1.0.rar)
 * [Source code (zip)](https://github.com/CVOSoftware/HttpHeadersViewer/archive/Release.zip)
 * [Source code (tar.gz)](https://github.com/CVOSoftware/HttpHeadersViewer/archive/Release.tar.gz)
 
