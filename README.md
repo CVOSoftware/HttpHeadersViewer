@@ -11,4 +11,4 @@ To work correctly, it must be installed .NET Framework 4.8. The program itself i
 * [Proposal to expand the functionality of the program](https://github.com/CVOSoftware/HttpHeadersViewer/issues/new?assignees=CVOSoftware&labels=enhancement&template=FEATURE_REQUEST.md&title=%5BFeature%5D)
 
 ### Preview
-![Preview](https://github.com/CVOSoftware/HttpHeadersViewer/blob/master/.github/RESOURCE/PREVIEW.png) 
+![Preview](https://github.com/CVOSoftware/HttpHeadersViewer/blob/master/.github/RESOURCE/PREVIEW.png)
